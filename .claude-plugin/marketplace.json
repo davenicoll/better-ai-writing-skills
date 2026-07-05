@@ -1,17 +1,18 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "conorbronsdon-skills",
-  "description": "Conor Bronsdon's public Claude Code / Cowork skills.",
+  "name": "davenicoll-skills",
+  "description": "Dave Nicoll's public Claude Code / Cowork skills.",
   "owner": {
-    "name": "Conor Bronsdon"
+    "name": "Dave Nicoll",
+    "url": "https://github.com/davenicoll"
   },
   "plugins": [
     {
-      "name": "avoid-ai-writing",
-      "source": "./plugins/avoid-ai-writing",
-      "description": "Audit & rewrite content to remove AI writing patterns (\"AI-isms\"). Supports detect-only and edit-in-place modes, voice profiles, and iterate-to-convergence.",
+      "name": "better-ai-writing-skills",
+      "source": "./plugins/better-ai-writing-skills",
+      "description": "Audit & rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, research-grounded pattern list.",
       "category": "productivity",
-      "keywords": ["writing", "editing", "ai-detection", "humanize"]
+      "keywords": ["writing", "editing", "ai-detection", "humanize", "stylometry"]
     }
   ]
 }

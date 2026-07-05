@@ -1,0 +1,13 @@
+{
+  "name": "better-ai-writing-skills",
+  "description": "Audit & rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, research-grounded pattern list.",
+  "version": "3.11.0",
+  "author": {
+    "name": "Dave Nicoll",
+    "url": "https://github.com/davenicoll"
+  },
+  "homepage": "https://github.com/davenicoll/better-ai-writing-skills",
+  "repository": "https://github.com/davenicoll/better-ai-writing-skills",
+  "license": "MIT",
+  "keywords": ["writing", "editing", "ai-detection", "humanize", "stylometry"]
+}

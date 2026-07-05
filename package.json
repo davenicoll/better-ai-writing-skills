@@ -1,12 +1,18 @@
 {
-  "name": "avoid-ai-writing-detector",
-  "version": "3.5.0",
-  "description": "Deterministic detection engine for the Avoid AI Writing skill — 44-category pattern + stylometric analysis of AI-generated text.",
+  "name": "better-ai-writing-skills-detector",
+  "version": "3.11.0",
+  "description": "Deterministic detection engine for the better-ai-writing-skills package — pattern + stylometric analysis of AI-generated text. Fork of avoid-ai-writing (Conor Bronsdon, MIT) extended with 2026-07 research-grounded patterns.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/conorbronsdon/avoid-ai-writing.git"
+    "url": "https://github.com/davenicoll/better-ai-writing-skills.git"
   },
+  "homepage": "https://github.com/davenicoll/better-ai-writing-skills",
+  "bugs": "https://github.com/davenicoll/better-ai-writing-skills/issues",
+  "author": "Dave Nicoll",
+  "contributors": [
+    "Conor Bronsdon (original avoid-ai-writing author, upstream MIT)"
+  ],
   "main": "detector/patterns.js",
   "files": [
     "detector/patterns.js"

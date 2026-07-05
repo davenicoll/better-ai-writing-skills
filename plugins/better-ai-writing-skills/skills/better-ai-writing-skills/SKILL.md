@@ -1,7 +1,16 @@
 ---
-description: Audit and rewrite content to remove AI writing patterns ("AI-isms"). Activate whenever editing prose-heavy files (Markdown, documentation, blog posts, READMEs, release notes, emails). Cursor port of the avoid-ai-writing skill v3.7.2. See https://github.com/conorbronsdon/avoid-ai-writing.
-globs: ["**/*.md", "**/*.mdx", "**/*.txt", "**/*.rst", "**/*.adoc"]
-alwaysApply: false
+name: better-ai-writing-skills
+description: Audit and rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, and a research-grounded pattern list based on 2024-2026 stylometry literature. Fork of avoid-ai-writing v3.10 (Conor Bronsdon, MIT) extended with the Guardian 2026-07-04 long-read pass.
+version: 3.11.0
+license: MIT
+compatibility: Any AI coding assistant that supports agentskills.io SKILL.md format (Claude Code, Cursor, VS Code Copilot, Hermes Agent, OpenHands, etc.) or OpenClaw. No external tools or APIs required.
+metadata:
+  originalAuthor: Conor Bronsdon (upstream avoid-ai-writing v3.10)
+  forkMaintainer: Dave Nicoll
+  upstream: https://github.com/conorbronsdon/avoid-ai-writing
+  repository: https://github.com/davenicoll/better-ai-writing-skills
+  tags: writing editing voice quality stylometry
+  agentskills_spec: "1.0"
 ---
 
 # Avoid AI Writing — Audit & Rewrite
@@ -28,7 +37,7 @@ This skill operates in one of three modes:
 - You're auditing text you don't want altered (published content, someone else's writing, reference material)
 - You want a quick scan without waiting for a full rewrite
 
-**`edit`** — Edit a file in place rather than returning rewritten text. Use this when the writer points you at a file ("clean up `draft.md`", "fix the AI-isms in this file directly") and wants the file changed, not a copy to paste back. Make **minimal, targeted edits** — change the flagged spans, not the whole document. **Preserve passages that are already human**: if a paragraph has no tells, leave it untouched. **Don't edit quoted material, code blocks, or text attributed to someone else** — flag those instead of rewriting them. For a large file, confirm which section to clean before changing anything. After editing, re-read the file and confirm the flagged patterns are resolved.
+**`edit`** — Edit a file in place rather than returning rewritten text. Use this when the writer points you at a file ("clean up `draft.md`", "fix the AI-isms in this file directly") and wants the file changed, not a copy to paste back. Make **minimal, targeted edits** with the Edit tool — change the flagged spans, not the whole document. **Preserve passages that are already human**: if a paragraph has no tells, leave it untouched. **Don't edit quoted material, code blocks, or text attributed to someone else** — flag those instead of rewriting them. For a large file, confirm which section to clean before changing anything. After editing, re-read the file and confirm the flagged patterns are resolved.
 
 Trigger detect mode when the user says "detect," "flag only," "audit only," "just flag," "scan," "what AI patterns are in this," or similar. Trigger edit mode when the user names a file and asks you to fix or clean it in place. Default to rewrite mode if not specified.
 
@@ -52,7 +61,7 @@ In **detect** mode, your job is to:
 In **edit** mode, your job is to:
 
 1. **Read** the file the writer named
-2. **Edit in place**: apply minimal, targeted fixes to the flagged spans, leaving already-human passages untouched
+2. **Edit in place**: apply minimal, targeted fixes to the flagged spans with the Edit tool, leaving already-human passages untouched
 3. **Verify**: re-read the file and confirm the flagged patterns are resolved; report what you changed
 
 ---
@@ -73,6 +82,7 @@ In **edit** mode, your job is to:
 - **Hedging**: Cut `perhaps`, `could potentially`, `it's important to note that`, `to be clear`. Make the point directly.
 - **Missing bridge sentences**: Each paragraph should connect to the last. If paragraphs could be rearranged without the reader noticing, add connective tissue.
 - **Compulsive rule of three**: Vary groupings. Use two items, four items, or a full sentence instead of triads. Max one "adjective, adjective, and adjective" pattern per piece.
+  - **Tricolon nuance (2026-07 addition):** the signal isn't the tricolon, it's the cadence. AI tricolons have three items of roughly equal length hitting the same note ("fast, reliable, and scalable"). Human tricolons either escalate/surprise on the third item or earn the shape rhetorically. Test: if three items appear, ask whether two do the same work. If yes, cut to two. If the third is distinct in length, surprise value, or tone, the tricolon earns its place. Hardaker (Guardian 2026-07-04) notes that tricolon-hunting also false-flags skilled human prose, so treat it as a signal to inspect, not a hard ban.
 
 ### Words and phrases to replace
 
@@ -208,6 +218,23 @@ These are normal words. Only flag them when the text is saturated with them — 
 | instrumental | Say what role it played |
 | world-class / state-of-the-art / best-in-class | Cite a benchmark or comparison |
 
+#### Tier 4 — Second-wave density markers (v3.11 addition, Kobak et al.)
+
+Common words that appear 2×–5× more often in LLM output than in matched human text. Not yet famous the way "delve" is, therefore not scrubbed by careful writers. Density flag: two or more in any 200-word passage is a signal to inspect. Not a hard ban.
+
+| Word | What to check |
+|---|---|
+| notably | Signal-of-emphasis filler. Cut unless the fact genuinely stands out. |
+| particularly | Same. Almost always removable. |
+| within (as filler) | "operates within the framework of" — cut to "in" or restructure. |
+| additionally | Transition placeholder. Rewrite the connection. |
+| across (as filler) | "improvements across the board" — say what improved. |
+| exhibited | "the system exhibited resilience" — replace with "was resilient". |
+| enhancing | "enhancing the user experience" — replace with "makes X easier/faster". |
+| insights (as standalone abstract noun) | "provides insights" → "shows / suggests / reveals" plus what. |
+
+**Rationale.** Kobak et al. (arXiv:2406.07016) identify these as excess vocabulary in 15M PubMed abstracts. Geng & Trotta (arXiv:2502.09606) show that famous LLM tells (delve, intricate, realm) drop in frequency after being publicised, while less-famous ones like these keep climbing. Value of banning them now: they haven't yet been auto-scrubbed.
+
 #### Tier 3 phrases — Flag at density or in clusters
 
 Multi-word boilerplate that's individually unobjectionable but stacks heavily in AI-generated content (crypto, web3, DePIN, AI/infra reviews are the worst offenders). Flag at **2+ uses of the same phrase** (the per-phrase rule — lower threshold than single-word Tier 3 because a two-word match repeated twice is already stronger evidence than re-using "significant"), *plus* a **cluster rule**: three or more *distinct* phrases from this table in one piece is a strong signal even when each phrase only appears once — that's the shape LLMs take when they vary their own boilerplate to seem less repetitive.
@@ -300,8 +327,25 @@ These slot-fill constructions signal that a sentence was generated, not written.
 ### Generic conclusions
 - "The future looks bright," "Only time will tell," "One thing is certain," "As we move forward" — these are filler disguised as conclusions. Cut them. If the piece needs a closing thought, make it specific to the argument.
 
+### Chatbot artifacts — Model-fingerprint openers (v3.11 addition)
+
+**Highest-signal single category.** These are the model-fingerprint openers that Sun et al. (arXiv:2502.12150) show a five-way LLM classifier reaches 97.1% accuracy on. They persist through paraphrase, translation, and summarisation — meaning even LLM-processed text keeps the fingerprint.
+
+Flag on sight, cut entirely, never soften:
+- "Certainly!"
+- "Of course!"
+- "Absolutely!"
+- "Sure thing!"
+- "Happy to help with that!"
+- "I'd be happy to…"
+- "Here's a breakdown"
+- "Let me walk you through…"
+- "Let me explain…"
+
+These are distinct from the existing sycophantic-tone family — they're not validating the reader, they're announcing the reply. Same fingerprint, different function.
+
 ### Chatbot artifacts
-- "I hope this helps!", "Certainly!", "Absolutely!", "Great question!", "Feel free to reach out," "Let me know if you need anything else" — these are conversational tics from chat interfaces, not writing. Remove entirely.
+- "I hope this helps!", "Great question!", "Feel free to reach out," "Let me know if you need anything else" — these are conversational tics from chat interfaces, not writing. Remove entirely. ("Certainly!" and "Absolutely!" are covered in the Model-fingerprint openers section above.)
 - Also watch for: "In this article, we will explore…" or "Let's dive in!" — these are AI-generated meta-narration. Cut or rewrite with a direct opening.
 
 ### "Let's" constructions
@@ -326,6 +370,9 @@ These slot-fill constructions signal that a sentence was generated, not written.
 ### Inline-header lists
 - Bullet lists where each item starts with a bold header that repeats itself: "**Performance:** Performance improved by..." Strip the bold header and write the point directly. If the list items need headers, they should probably be paragraphs.
 
+### List-label periods
+- In bulleted lists where each item leads with a short label, LLMs end the label with a period and then run the explanation as a separate sentence. A person writing the same list almost always uses a colon instead. Strongest form: bold labels (`**Intros.**`, `**Content distribution.**`, `**Developer GTM.**` where a human writes `**Intros:**`). Weaker but still a tell: the same shape without bold (`- Intros. Years of conferences and operator network.`) — a short noun-phrase label terminated with a period at the start of a bullet, followed by a gloss. The colon reads as "here's what this label means"; the period reads as a sentence that the following clause then contradicts by continuing. Example tell: `- **Intros.** Years of conferences and operator network.` becomes `- **Intros:** years of conferences and operator network.` Fix the period to a colon and lowercase the start of the gloss, or drop the label and write the point as a plain sentence. Carve-outs: when the label span is a full sentence on its own (not a label introducing a gloss), the period is correct; and for the unbolded form, only flag when the leading fragment is clearly a label (a 1-4 word noun phrase, no verb) — a short complete sentence opening a bullet is fine.
+
 ### Title case headings
 - AI over-capitalizes headings: "Strategic Negotiations And Key Partnerships" instead of "Strategic negotiations and key partnerships." Use sentence case for subheadings. Title case only for the piece's main title, if at all.
 
@@ -337,6 +384,19 @@ These slot-fill constructions signal that a sentence was generated, not written.
 
 ### Speculative gap-filling
 - When the model lacks a fact, it fills the gap with hedged speculation dressed up as background: "maintains a relatively low public profile," "is believed to have," "likely began his career in," "appears to have studied." These are guesses formatted as statements. Distinct from cutoff disclaimers, which *admit* the gap — this one hides it behind plausible-sounding filler, which is worse because the reader can't tell what's known from what's invented. Cut the speculation, or replace it with a sourced fact. Adapted from `blader/humanizer` P21.
+
+### Unfilled placeholders
+- Bracketed slot-fillers that were meant to be replaced before publishing: `[Your Name]`, `[INSERT SOURCE URL]`, `[Describe the specific section]`, `2025-XX-XX`, `<!-- Add citation if available -->`. These are near-definitive evidence that AI-generated boilerplate was pasted without editing. Humans use placeholders in templates too, but rarely ship them. Treat any visible placeholder as a publishing bug: fill it in with real content or delete the sentence entirely.
+- Catch the obvious shapes: `\[(?:Your|Insert|Add|Enter|Describe|Specify|Choose)[^\]]+\]`, `\b\d{4}-XX-XX\b`, HTML/Markdown comments with placeholder verbs (`add`, `fill in`, `todo`, `insert`).
+
+### Chatbot citation markup leaks
+- Internal citation tokens that leak through when text is copy-pasted from chat UIs: `citeturn0search0`, `contentReference[oaicite:0]{index=0}`, `oai_citation`, `[attached_file:1]`, `grok_card`. These are not patterns — they are fingerprints. Their presence is essentially proof the text was generated by a specific chat tool and pasted without cleanup.
+- The fix is mechanical: strip every markup token. If a citation was meaningful, replace it with a real reference. Don't try to humanize the markup — delete it.
+- Adapted from `Aboudjem/humanizer-skill` P34. Worth catching even when nothing else in the text reads as AI — the token itself is enough.
+
+### AI-tool URL parameters
+- Tracking parameters that AI tools auto-append to URLs they generate, surviving copy-paste into published content: `utm_source=chatgpt.com`, `utm_source=copilot.com`, `utm_source=openai`, `utm_source=claude.ai`, `utm_source=perplexity.ai`, `referrer=grok.com`. Same logic as citation markup leaks — the presence of the parameter is the signature, regardless of what the surrounding text reads like.
+- The fix: strip the parameter from every URL. Keep the URL itself if the link is meaningful; lose the parameter entirely. Adapted from `Aboudjem/humanizer-skill` P35.
 
 ### Novelty inflation
 - AI text treats established concepts as if the speaker invented or discovered them: "He introduced a term," "She coined the phrase," "a concept nobody's naming," "a failure mode nobody talks about." In reality, most ideas in a conversation are applications of existing concepts, not inventions.
@@ -373,6 +433,13 @@ These slot-fill constructions signal that a sentence was generated, not written.
 ### Numbered list inflation
 - "Three key takeaways" / "Five things to know" / "Here are the top seven" � AI defaults to numbered lists because they're structurally safe. Only use numbered lists when the content genuinely has that many discrete, parallel items. If you're padding to hit a number, the list shouldn't exist.
 
+### Signpost-then-content structure (2026-07 addition)
+- Opening a paragraph or section by announcing what it will discuss, then discussing it: "In this section, I'll cover…", "To understand X, we need to first look at Y", "Let's start by examining…".
+- The model describes the writing instead of doing it. Different from Chatbot artifacts ("In this article, we will explore…" as an article opener) and different from Reasoning chain artifacts (step-by-step scaffolding). This one is section-level or paragraph-level: the writer announces the plan for the next few sentences before executing it.
+- In a book with clear structure, some signposting is useful. In a reply or blog post, it's stalling.
+- Fix: cut the signpost and start with the content. If the content genuinely needs a header or transition, use one — don't narrate it into prose.
+- Rationale: research doc Section 5.6 (Stockwell's layered-language model applied at the discourse level).
+
 ### Reasoning chain artifacts
 - "Let me think step by step," "Breaking this down," "To approach this systematically," "Step 1:," "Here's my thought process," "First, let's consider," "Working through this logically" — these are artifacts of chain-of-thought reasoning leaking into published prose. The reader doesn't need to see the scaffolding. State the conclusion, then the evidence.
 - Also watch for numbered reasoning steps that read like an internal monologue rather than an argument meant for an audience.
@@ -380,6 +447,56 @@ These slot-fill constructions signal that a sentence was generated, not written.
 ### Sycophantic tone
 - "Great question!", "Excellent point!", "You're absolutely right!", "That's a really insightful observation" — these are conversational rewards from chat interfaces, not writing. Remove entirely.
 - Distinct from chatbot artifacts: sycophancy specifically validates the reader/questioner rather than just performing helpfulness.
+
+**Sycophancy is a posture, not a vocabulary list (v3.11 addition, Yakura et al.).** Yakura et al. (arXiv:2409.01754) characterise ChatGPT's core statistical preference as: politeness, neutrality, conflict avoidance, formal etiquette, mainstream social norms. Banning individual sycophantic phrases without dropping the posture generates new expressions of the same thing. Structural moves that constitute the posture:
+
+- Conciliatory summary at the end of a disagreement.
+- "You raise a good point" or equivalent before a rebuttal.
+- Offering alternative framings when one framing is correct.
+- Softening a negative assessment to spare discomfort.
+A rewrite that removes sycophancy vocabulary while preserving the deference posture will read as AI. Cut the moves, not just the words.
+
+### Terminal-insight move (v3.11 addition)
+
+Every LLM reply ends with a sentence that resolves into a generalisation, moral, or principle. "Ultimately, X is about Y." "The key takeaway is…" "What this means is…" "In the end, it comes down to…" "That's the real insight."
+
+Distinct from "at its core" and other persuasive-authority tropes (covered under Confidence calibration) — those front-load the cue mid-piece. The terminal-insight move is specifically the closing shape: the piece resolving into a lesson.
+
+**Test:** read the last sentence of any reply over 80 words. Does it generalise, moralise, or summarise? If yes, cut it. Stop on the last relevant fact.
+
+**What to do instead:** finish on the last piece of substance. Real writing stops when it's done, not when it reaches a bow.
+
+**Why this is a strong structural tell:** RLHF training rewards resolution and closure. Human conversation in professional or task-oriented writing doesn't. An EA who confirms a booking doesn't add "Effective communication is the foundation of good scheduling." She stops.
+
+Rationale: Stockwell's layered-language model (Guardian 2026-07-04); Yakura et al. (arXiv:2409.01754). Complements the existing Generic conclusions section.
+
+### Register variation within a piece (v3.11 addition)
+
+Dentella et al. (arXiv:2508.16385) show LLMs have narrower register-flexibility than humans. Within a single piece, human writing shifts between paragraphs — one is sharper, one more expansive, one blunter — even without conscious planning. LLM output stays inside a single polite band throughout.
+
+**Diagnostic** (for pieces 300+ words): read each paragraph and ask "is this at the same temperature as the ones around it?" If every paragraph runs at the same pitch, that's a signal.
+
+**Fix:** deliberately vary. Make one paragraph sharper than strictly needed. Make another blunter. Let a third run more expansive.
+
+Doesn't apply to short replies (<80 words). Applies to blog posts, long-form external communications, essay-shaped replies.
+
+Distinct from Sentence length uniformity and Paragraph length uniformity. This is about tone temperature, not sentence architecture.
+
+### Attributive-adjective stacking (v3.11 addition)
+
+Dentella et al. (arXiv:2508.16385): LLMs load information into pre-nominal noun phrases far more than humans. Dense form:
+
+- "The detailed quarterly financial performance review process"
+- "A comprehensive multi-stakeholder cross-functional alignment session"
+
+Compare the clause-based human form:
+
+- "A process that reviews financial performance each quarter"
+- "A session where the stakeholders align on cross-functional work"
+
+**Signal, not hard ban.** Sometimes the dense form is correct (technical registers, legal text, structured taxonomy). Three or more adjectives stacked before a noun in general prose is worth inspecting. The unpacked form is often clearer, and always more human.
+
+**Test:** if you see three or more adjectives before a noun, ask whether the sentence would be clearer as a clause.
 
 ### Acknowledgment loops
 - "You're asking about," "The question of whether," "To answer your question," "That's a great question. The..." — AI restates the prompt before answering. In writing, this is pure filler. The reader knows what they asked. Just answer.
@@ -390,6 +507,14 @@ These slot-fill constructions signal that a sentence was generated, not written.
 - "Here's what's interesting," "Here's the interesting part," "Here are the parts I found interesting" — reader-steering cue that pre-interprets importance. Works when followed by genuinely surprising data; fails when it introduces a restatement of something obvious (which is the AI default).
 - One "notably" in a 2,000-word piece is fine. Three in 500 words is AI-style emphasis stacking. Flag by density.
 - Related — **persuasive-authority tropes**: "the real question is," "at its core," "fundamentally," "make no mistake," "the truth is." Same move as the calibration phrases above, but they assert depth or stakes instead of feeling: they announce that what follows is important rather than showing it. Cut the trope and lead with the substance. Adapted from `blader/humanizer` P27.
+
+### Self-labeling significance
+- After listing or describing several items, the writer points back at one and labels it as contrarian / clever / surprising / counterintuitive / key: "That last move is the contrarian one," "This is the interesting part," "That third bullet is the real story," "Here's where it gets clever," "The last bit is the counterintuitive one."
+- The label does the work the content was supposed to do. If a move is genuinely contrarian, the reader recognizes it from the description; if it isn't recognizable without the label, the label is unearned. The pattern reads as the writer auditing their own list to flag which item should matter, instead of writing the list so the right item carries the weight on its own.
+- Distinct from confidence calibration ("Notably," "Interestingly") which front-loads the cue, and from emotional flatline ("What surprised me most," "The most interesting part") which prefaces a single claim. This pattern back-points after the fact, usually as "[that / this / the Xth / the last] [noun] is the [adjective] one."
+- Significance-adjectives that signal the pattern: contrarian, clever, surprising, counterintuitive, interesting, key, important, unusual, smart, brilliant, real, actual.
+- Fix: cut the labeling sentence and let the explanation that follows do the work directly. Or restructure so the item you wanted to highlight is positioned first or expanded with specifics, making the label redundant.
+- Example. Before: "→ Two separate indexes for tiered storage. That last move is the contrarian one. Co-locating related data usually helps cache locality." After: "→ Two separate indexes for tiered storage. Co-locating related data usually helps cache locality, but splitting the indexes is what makes the hot path cheap." The contrast carries itself; the label is gone.
 
 ### Excessive structure
 - Too many headers in short text: more than 3 headings in under 300 words is almost always AI trying to look organized. Merge sections or use prose transitions instead.
@@ -488,33 +613,53 @@ Pass an optional context hint to adjust rule strictness. If no context is specif
 **`investor-email`** � High-trust audience. Tighten everything; promotional language is the biggest risk.
 **`docs`** � Documentation, READMEs, guides. Clarity over voice.
 **`casual`** � Slack messages, internal notes, quick replies. Only catch the worst offenders.
+**`external-email`** (v3.11 addition) — high-formality writing to third parties (school principals, service providers, professional contacts).
+
+Primary tells: face-saving pragmatic hedges. Navneet et al. (arXiv:2602.22145) quantify LLM erasure of pragmatic-politeness markers at 71.5% — nearly 2× the vocabulary erasure rate and the highest of any marker category. Corollary: when generating, LLMs default hardest to a deference register in exactly this format.
+
+Flag on sight:
+- "I just wanted to check…"
+- "I hope this finds you well"
+- "Apologies for the interruption"
+- "Would it be possible to…"
+- "At your earliest convenience"
+- "Please do not hesitate to…"
+- "I wanted to reach out to…"
+- "I hope this email finds you well"
+- "I trust this message finds you well"
+
+**What to do instead:** direct address. State the reason for writing in sentence one. Warm, specific, no ritual softening. Will feel rude compared to LLM defaults. That discomfort is the calibration signal.
+
+**Tolerance:** low. Even one instance in a 200-word email warrants a rewrite. Two means the whole draft needs redoing.
 
 ### Tolerance matrix
 
 Rules not listed in the table apply at full strength across all profiles.
 
-| Rule | linkedin | blog | technical-blog | investor-email | docs | casual |
-|------|----------|------|----------------|----------------|------|--------|
-| Em dashes | relaxed (2/post OK) | strict | strict | strict | relaxed | skip |
-| Bold overuse | relaxed (bold hooks OK) | strict | strict | strict | relaxed | skip |
-| Emoji in headers | relaxed (1-2 end-of-line OK) | strict | strict | strict | skip | skip |
-| Excessive bullets | skip (lists work on LinkedIn) | strict | relaxed (technical lists OK) | strict | skip (lists are docs) | skip |
-| Hedging | strict | strict | relaxed ("may" is accurate in technical) | strict | relaxed | skip |
-| Word table (full list) | strict | strict | **partial** (see below) | strict | relaxed | P0 only |
-| Promotional language | relaxed (some sell is expected) | strict | strict | **extra strict** | strict | skip |
-| Significance inflation | strict | strict | strict | **extra strict** | relaxed | skip |
-| Copula avoidance | skip | strict | relaxed | strict | skip | skip |
-| Uniform paragraph length | skip (short-form) | strict | strict | strict | relaxed | skip |
-| Numbered list inflation | relaxed | strict | relaxed | strict | skip | skip |
-| Rhetorical questions | relaxed (1 as hook OK) | strict | strict | strict | strict | skip |
-| Transition phrases | skip (short-form) | strict | strict | strict | relaxed | skip |
-| Generic conclusions | skip | strict | strict | **extra strict** | skip | skip |
-| Hashtag stuffing | strict | strict | strict | **extra strict** | skip (no hashtags in docs) | skip |
-| Bullet-NP lists | strict | strict | relaxed (technical option lists OK) | strict | relaxed (parameter lists OK) | skip |
-| Tier 3 phrase clustering | strict | strict | strict | **extra strict** | relaxed | skip |
-| Future-narrative closers | strict | strict | strict | **extra strict** | skip | skip |
-| Hedge-stacked predictions | strict | strict | relaxed ("could" is hedged accuracy) | **extra strict** | relaxed | skip |
-| Real/actual inflation | strict | strict | strict | **extra strict** | relaxed | skip |
+| Rule | linkedin | blog | technical-blog | investor-email | external-email | docs | casual |
+|------|----------|------|----------------|----------------|----------------|------|--------|
+| Em dashes | relaxed (2/post OK) | strict | strict | strict | strict | relaxed | skip |
+| Bold overuse | relaxed (bold hooks OK) | strict | strict | strict | strict | relaxed | skip |
+| Emoji in headers | relaxed (1-2 end-of-line OK) | strict | strict | strict | strict | skip | skip |
+| Excessive bullets | skip (lists work on LinkedIn) | strict | relaxed (technical lists OK) | strict | strict | skip (lists are docs) | skip |
+| Hedging | strict | strict | relaxed ("may" is accurate in technical) | strict | **extra strict** | relaxed | skip |
+| Word table (full list) | strict | strict | **partial** (see below) | strict | strict | relaxed | P0 only |
+| Promotional language | relaxed (some sell is expected) | strict | strict | **extra strict** | **extra strict** | strict | skip |
+| Significance inflation | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip |
+| Copula avoidance | skip | strict | relaxed | strict | strict | skip | skip |
+| Uniform paragraph length | skip (short-form) | strict | strict | strict | strict | relaxed | skip |
+| Numbered list inflation | relaxed | strict | relaxed | strict | strict | skip | skip |
+| Rhetorical questions | relaxed (1 as hook OK) | strict | strict | strict | strict | strict | skip |
+| Transition phrases | skip (short-form) | strict | strict | strict | strict | relaxed | skip |
+| Generic conclusions | skip | strict | strict | **extra strict** | **extra strict** | skip | skip |
+| Hashtag stuffing | strict | strict | strict | **extra strict** | skip (no hashtags in professional emails) | skip (no hashtags in docs) | skip |
+| Bullet-NP lists | strict | strict | relaxed (technical option lists OK) | strict | strict | relaxed (parameter lists OK) | skip |
+| Tier 3 phrase clustering | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip |
+| Future-narrative closers | strict | strict | strict | **extra strict** | **extra strict** | skip | skip |
+| Social endorsement closers | strict (the LinkedIn share-post tell) | strict | strict | strict | strict | skip | relaxed (1 OK in a DM) |
+| Hedge-stacked predictions | strict | strict | relaxed ("could" is hedged accuracy) | **extra strict** | **extra strict** | relaxed | skip |
+| Real/actual inflation | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip |
+| Face-saving pragmatic hedges (external-email profile primary tell) | relaxed | relaxed | relaxed | strict | **extra strict** | relaxed | skip |
 
 **Technical-blog word table exceptions:** These terms have legitimate technical meaning and should not be flagged in technical context: `robust`, `comprehensive`, `seamless`, `ecosystem`, `leverage` (when discussing actual platform leverage/APIs), `facilitate`, `underpin`, `streamline`. Still flag: `delve`, `tapestry`, `beacon`, `embark`, `testament to`, `game-changer`, `harness`.
 
@@ -615,3 +760,34 @@ Five principles for human-sounding rewrites:
 If the original writing is already strong, say so and make only the necessary cuts. Don't over-edit for the sake of it.
 
 The replacement table provides defaults, not mandates. If a flagged word is clearly the right choice in context, preserve it.
+
+---
+
+## Research basis (v3.11 addition)
+
+This skill's pattern list is grounded in primary stylometric and NLP research current as of July 2026. Future maintainers should treat additions to the ban list as claims that need evidence.
+
+**Vocabulary-level findings (Tiers 1–4):**
+- Kobak et al., "Delving into LLM-assisted writing in biomedical publications through excess vocabulary" (arXiv:2406.07016, *Science Advances* 2025). Excess-vocabulary method against 15M PubMed abstracts. Source for Tier 4.
+- Juzek & Ward, "Why Does ChatGPT 'Delve' So Much?" (COLING 2025). RLHF-labour-conditions hypothesis for word-level tells.
+- Geng & Trotta, "Human-LLM Coevolution" (arXiv:2502.09606). Shows tell erosion after publicisation.
+
+**Model-fingerprint findings (Chatbot artifacts, model-fingerprint openers):**
+- Sun et al., "Idiosyncrasies in Large Language Models" (arXiv:2502.12150, ICML 2025). 97.1% five-way classifier; fingerprints persist through paraphrase.
+
+**Structural findings (Terminal-insight, Register variation, Attributive stacking):**
+- Dentella et al., "ChatGPT-generated texts show authorship traits" (arXiv:2508.16385, Aug 2025).
+- Guardian long-read (Shariatmadari, 2026-07-04) summarising Stockwell's layered-language model.
+
+**Posture findings (Sycophantic tone, external-email profile):**
+- Yakura et al., "Empirical evidence of Large Language Model's influence on human spoken communication" (arXiv:2409.01754). Causal evidence for RLHF-derived politeness/neutrality preference.
+- Navneet et al., "When AI Writes, Whose Voice Remains?" (arXiv:2602.22145, CHI EA '26). Pragmatic-marker erasure at 71.5%.
+
+**Detection-tool caveats (What this skill is and isn't):**
+- Hardaker's "Bot or Not" test (Guardian 2026-07-04): humans achieve ~60% accuracy; heuristics people use (em dashes, tricolons) also appear in skilled human writing.
+- Pangram detector defeated on first attempt by a professional reporter using bombastic register.
+- Independent detectors show false-positive rates >60% on non-native English writers (Liang et al., Stanford, *Patterns* 2023).
+
+**How to add to the ban list:** cite the paper or the audit. If the addition can't be grounded, mark it as intuition and keep it under review.
+
+**Research basis for v3.11 additions:** [notes/2026-07-04-guardian-research-pass.md](notes/2026-07-04-guardian-research-pass.md) in this repo.

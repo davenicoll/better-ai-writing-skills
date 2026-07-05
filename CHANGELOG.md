@@ -2,6 +2,52 @@
 
 All notable changes to this project are documented here.
 
+**Fork history:** starting from v3.11.0 (2026-07-04), this project is `davenicoll/better-ai-writing-skills`, a fork of [`conorbronsdon/avoid-ai-writing`](https://github.com/conorbronsdon/avoid-ai-writing) v3.10 by Conor Bronsdon (MIT). Pre-v3.11 entries below document upstream releases; v3.11+ entries document changes in this fork.
+
+---
+
+## [3.11.0] — 2026-07-04
+
+First release of `davenicoll/better-ai-writing-skills`. Extends upstream v3.10 with six research-grounded categories from a July 2026 pass over the Guardian long-read "How AI is changing language" (Shariatmadari) and the primary papers it cites. All v3.10 content preserved verbatim.
+
+### Added
+
+- **Model-fingerprint openers** (Chatbot artifacts subsection). New sub-category listing the highest-signal opener family (`Certainly!`, `Of course!`, `Absolutely!`, `Sure thing!`, `Happy to help with that!`, `I'd be happy to…`, `Here's a breakdown`, `Let me walk you through…`, `Let me explain…`). Grounded in Sun et al. (arXiv:2502.12150, ICML 2025) — a five-way LLM classifier reaches 97.1% accuracy on held-out data driven substantially by opener patterns. These persist through paraphrase, translation, and summarisation.
+
+- **Tier 4 — Second-wave density markers** (Kobak et al.). New vocabulary tier for common-word markers that survived self-policing because they haven't been publicised: `notably`, `particularly`, `within` (as filler), `additionally`, `across` (as filler), `exhibited`, `enhancing`, `insights` (as standalone abstract noun). Density flag — two or more in any 200-word passage. Not hard bans individually. Grounded in Kobak et al. (arXiv:2406.07016, *Science Advances* 2025) and Geng & Trotta (arXiv:2502.09606).
+
+- **Sycophancy as a posture, not a vocabulary list.** Extension to the existing Sycophantic tone section. Yakura et al. (arXiv:2409.01754) causal evidence: RLHF training produces politeness, neutrality, conflict-avoidance, formal-etiquette preferences as the *underlying attractor* that generates the vocabulary. Bans four structural moves: no conciliatory summary at end of disagreement, no "you raise a good point" before rebuttal, no offering alternative framings when one framing is correct, no softening a negative assessment to spare discomfort.
+
+- **Terminal-insight move** (new structural pattern). Every LLM reply resolves into a generalisation, moral, or principle on the last sentence. Explicit ban with test: read the last sentence of any reply over 80 words; if it generalises/moralises/summarises, cut it. Grounded in Stockwell's layered-language model (Guardian 2026-07-04) and Yakura et al.
+
+- **Register variation within a piece** (new diagnostic for 300+ word content). Dentella et al. (arXiv:2508.16385): LLMs have narrower register-flexibility than humans. Every paragraph running at the same polite temperature is a signal. Fix: deliberately make one paragraph sharper, one blunter, one more expansive than the material strictly requires.
+
+- **Attributive-adjective stacking** (new structural signal). Dentella et al.: LLMs load information into pre-nominal noun phrases far more than humans. Three or more adjectives stacked before a noun in general prose is worth inspecting. Signal to inspect, not a hard ban.
+
+- **New context profile: `external-email`.** High-formality writing to third parties. Face-saving pragmatic hedges (`I just wanted to check…`, `I hope this finds you well`, `Would it be possible to…`, `At your earliest convenience`, `Please do not hesitate to…`) as the primary tell. Grounded in Navneet et al. (arXiv:2602.22145, CHI EA '26): LLMs erase pragmatic-politeness markers at 71.5% — nearly 2× the vocabulary erasure rate — and correspondingly impose the deference register hardest when generating in this format. Added as a 7th column in the tolerance matrix.
+
+- **Tricolon nuance refinement.** Extension to the existing Compulsive rule of three rule. The signal isn't the tricolon, it's the cadence — AI tricolons have three items of roughly equal length hitting the same note ("fast, reliable, scalable"); human tricolons either escalate/surprise in the third item or earn the shape rhetorically. Hardaker (Guardian 2026-07-04) notes that tricolon-hunting also false-flags skilled human prose, so treat it as a signal to inspect, not a hard ban.
+
+- **Signpost-then-content structural pattern.** New standalone rule at section/paragraph level (distinct from the existing article-opener Chatbot artifact and Reasoning chain artifact rules). "In this section, I'll cover…", "To understand X, we need to first look at Y", "Let's start by examining…" — the model describes the writing instead of doing it. Fix: cut the signpost, start with the content.
+
+- **Research basis appendix.** New section documenting the primary literature behind every category (vocabulary tiers 1–4, model-fingerprint findings, structural findings, posture findings, detection-tool caveats). Future maintainers should treat additions to the ban list as claims that need evidence.
+
+- **Research notes.** [`notes/2026-07-04-guardian-research-pass.md`](notes/2026-07-04-guardian-research-pass.md) — the 12-source research document that drove the additions. Preserved for evidence and future-maintainer reference.
+
+### Changed
+
+- Frontmatter `name` field: `avoid-ai-writing` → `better-ai-writing-skills`.
+- Frontmatter `version`: `3.10.0` → `3.11.0`.
+- Metadata attribution: adds `originalAuthor` (Conor Bronsdon) and `forkMaintainer` (Dave Nicoll) fields; adds `upstream` and `repository` URLs.
+- Deduplication: `Certainly!` and `Absolutely!` removed from the existing Chatbot artifacts list (they now live only in the new Model-fingerprint openers section, with a pointer from the original site).
+- Tolerance matrix: gains an `external-email` column; adds a new row for face-saving pragmatic hedges.
+- Package name: `avoid-ai-writing-detector` → `better-ai-writing-skills-detector`.
+- Marketplace/plugin manifests: rebranded to `davenicoll-skills` / `better-ai-writing-skills`.
+
+### Preserved verbatim from v3.10
+
+All formatting rules, sentence structure rules, Tiers 1–3 vocabulary tables, template phrases, transition phrases, structural issues (paragraph-reshuffle immunity, treadmill effect, uniform paragraphs), significance inflation, generic future-narrative closers, hedge-stacked predictions, real/actual adjective inflation, hashtag stuffing, bullet lists of bare noun phrases, copula avoidance, synonym cycling, vague attributions, filler phrases, generic conclusions, chatbot artifacts (extended, not rewritten), "Let's" constructions, notability name-dropping, superficial -ing analyses, promotional language, formulaic challenges, false ranges, inline-header lists, list-label periods, title case headings, hyphenated-pair overuse, cutoff disclaimers, speculative gap-filling, unfilled placeholders, chatbot citation markup leaks, AI-tool URL parameters, novelty inflation, infomercial engagement hooks, social endorsement closers, emotional flatline, false concession structure, rhetorical question openers, parenthetical hedging, numbered list inflation, reasoning chain artifacts, sycophantic tone (extended, not rewritten), acknowledgment loops, confidence calibration phrases, self-labeling significance, excessive structure, rhythm and uniformity, vocabulary diversity, when-to-rewrite-from-scratch guidance, all severity tiers (P0/P1/P2), self-reference escape hatch, all existing context profiles (linkedin, blog, technical-blog, investor-email, docs, casual), auto-detection cues, voice profiles, output format, tone calibration.
+
 ---
 
 ## [3.10.0] — 2026-06-10

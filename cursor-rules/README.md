@@ -4,12 +4,12 @@ Drop-in [Cursor](https://cursor.sh) rule that ports the [`avoid-ai-writing`](../
 
 ## Install
 
-Copy `avoid-ai-writing.mdc` into your project's `.cursor/rules/` directory:
+Copy `better-ai-writing.mdc` into your project's `.cursor/rules/` directory:
 
 ```sh
 mkdir -p .cursor/rules
-curl -o .cursor/rules/avoid-ai-writing.mdc \
-  https://raw.githubusercontent.com/conorbronsdon/avoid-ai-writing/main/cursor-rules/avoid-ai-writing.mdc
+curl -o .cursor/rules/better-ai-writing.mdc \
+  https://raw.githubusercontent.com/davenicoll/better-ai-writing-skills/main/cursor-rules/better-ai-writing.mdc
 ```
 
 By default the rule activates on `.md`, `.mdx`, `.txt`, `.rst`, and `.adoc` files (via the `globs` field in the frontmatter). Edit the globs in the rule file if you want it on other file types — or set `alwaysApply: true` if you want it on every Cursor session.
@@ -24,7 +24,7 @@ Once installed, ask Cursor:
 
 ## Old Cursor projects
 
-If you're on a Cursor version that still uses `.cursorrules` (single file at repo root), you can append `avoid-ai-writing.mdc`'s body (the part below the `---` frontmatter) directly to your existing `.cursorrules` file. Modern Cursor projects should prefer the `.cursor/rules/*.mdc` layout.
+If you're on a Cursor version that still uses `.cursorrules` (single file at repo root), you can append `better-ai-writing.mdc`'s body (the part below the `---` frontmatter) directly to your existing `.cursorrules` file. Modern Cursor projects should prefer the `.cursor/rules/*.mdc` layout.
 
 ## Updating
 

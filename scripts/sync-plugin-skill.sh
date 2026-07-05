@@ -6,7 +6,7 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 src="$repo_root/SKILL.md"
-dest="$repo_root/plugins/avoid-ai-writing/skills/avoid-ai-writing/SKILL.md"
+dest="$repo_root/plugins/better-ai-writing-skills/skills/better-ai-writing-skills/SKILL.md"
 
 cp "$src" "$dest"
 
@@ -19,7 +19,7 @@ if [ -z "$skill_version" ]; then
   exit 1
 fi
 plugin_version="$(
-  python3 - "$repo_root/plugins/avoid-ai-writing/.claude-plugin/plugin.json" <<'PY'
+  python3 - "$repo_root/plugins/better-ai-writing-skills/.claude-plugin/plugin.json" <<'PY'
 import json
 import sys
 
