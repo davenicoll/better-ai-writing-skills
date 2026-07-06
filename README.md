@@ -99,7 +99,7 @@ Power-user options (rarely needed — natural language usually works):
 
 ## What's in the pattern list
 
-Tier 1 (always flag) and Tier 2 (flag in clusters) cover ~120 vocabulary entries. Tier 3 flags common words at density. Tier 4 (v3.11) adds the Kobak second-wave markers. Beyond vocabulary, the skill covers:
+The skill defines **54 pattern categories**. Tier 1 (always flag) and Tier 2 (flag in clusters) cover ~120 vocabulary entries. Tier 3 flags common words at density. Tier 4 (v3.11) adds the Kobak second-wave markers. Beyond vocabulary, the skill covers:
 
 - Formatting (em dashes, bold, emoji, bullets, quotes)
 - Sentence structure ("It's not X — it's Y", hollow intensifiers, hedging)
