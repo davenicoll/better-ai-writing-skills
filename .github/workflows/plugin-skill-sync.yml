@@ -26,7 +26,7 @@ jobs:
       - name: Validate manifest JSON
         run: |
           python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
-          python3 -m json.tool plugins/avoid-ai-writing/.claude-plugin/plugin.json > /dev/null
+          python3 -m json.tool plugins/better-ai-writing-skills/.claude-plugin/plugin.json > /dev/null
 
       - name: Check README pattern count matches SKILL.md
         run: bash scripts/check-pattern-count.sh
@@ -37,7 +37,7 @@ jobs:
       - name: Fail if the bundled skill drifted from SKILL.md
         run: |
           if ! git diff --quiet; then
-            echo "::error::plugins/avoid-ai-writing/skills/avoid-ai-writing/SKILL.md is out of sync with the root SKILL.md."
+            echo "::error::plugins/better-ai-writing-skills/skills/better-ai-writing-skills/SKILL.md is out of sync with the root SKILL.md."
             echo "Run 'bash scripts/sync-plugin-skill.sh' and commit the result."
             git --no-pager diff --stat
             exit 1
