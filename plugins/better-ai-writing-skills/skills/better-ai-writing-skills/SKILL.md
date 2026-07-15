@@ -1,7 +1,7 @@
 ---
 name: better-ai-writing-skills
 description: Audit and rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, and a research-grounded pattern list based on 2024-2026 stylometry literature. Fork of avoid-ai-writing v3.10 (Conor Bronsdon, MIT) extended with the Guardian 2026-07-04 long-read pass.
-version: 3.11.2
+version: 3.11.3
 license: MIT
 compatibility: Any AI coding assistant that supports agentskills.io SKILL.md format (Claude Code, Cursor, VS Code Copilot, Hermes Agent, OpenHands, etc.) or OpenClaw. No external tools or APIs required.
 metadata:
@@ -432,6 +432,10 @@ These are distinct from the existing sycophantic-tone family — they're not val
 
 ### Parenthetical hedging
 - "(and, increasingly, Z)" / "(or, more precisely, Y)" / "(and perhaps more importantly, W)" � AI inserts parenthetical asides to sound nuanced without committing. If the aside matters, give it its own sentence. If it doesn't, cut it.
+
+### Self-qualifying hedge clauses
+- A noun phrase or claim interrupted mid-stream by a comma-set-off "but not too far" clause, to pre-empt an objection nobody raised: "the facts that shape, *but don't override*, the choice"; "a guide, though not a rulebook, for…"; "the metrics that inform, without dictating, the decision"; "changes that matter, but aren't everything." The tell is the self-cancelling rhythm — assert, immediately walk it half-back — which reads as balanced without committing to anything. Distinct from parenthetical hedging (set off by parentheses, usually additive) and false concession (a full "While X, Y" sentence); this one is a hedge clause embedded inside a single noun phrase or label, most often a heading or list lead-in.
+- Fix: state the thing plainly and, if the caveat matters, make it its own sentence. "The facts that shape, but don't override, the choice:" becomes "Other facts that shape the choice:" — the "don't override" is already implied by "shape," so it's cut, not relocated.
 
 ### Numbered list inflation
 - "Three key takeaways" / "Five things to know" / "Here are the top seven" � AI defaults to numbered lists because they're structurally safe. Only use numbered lists when the content genuinely has that many discrete, parallel items. If you're padding to hit a number, the list shouldn't exist.

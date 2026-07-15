@@ -6,6 +6,12 @@ All notable changes to this project are documented here.
 
 ---
 
+## [3.11.3] — 2026-07-15
+
+### Added
+
+- **Self-qualifying hedge clauses** (Sentence structure). New rule for a noun phrase or claim interrupted mid-stream by a comma-set-off "but not too far" clause that pre-empts an objection nobody raised: "the facts that shape, *but don't override*, the choice"; "a guide, though not a rulebook, for…"; "the metrics that inform, without dictating, the decision." The tell is the self-cancelling assert-then-walk-it-back rhythm. Distinct from parenthetical hedging (parentheses, additive) and false concession (a full "While X, Y" sentence); this is a hedge clause embedded in a single noun phrase or label, most often a heading or list lead-in. Judgment-only; no detector type.
+
 ## [3.11.2] — 2026-07-15
 
 ### Added
