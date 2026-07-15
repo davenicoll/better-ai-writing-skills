@@ -6,6 +6,17 @@ All notable changes to this project are documented here.
 
 ---
 
+## [3.11.1] — 2026-07-15
+
+### Added
+
+- **`honest` / `honestly` as framing** (Tier 2 vocabulary). Flag "the honest answer," "an honest take," "to be honest" when leaned on — cut and state the claim directly, or name the contrast if there is one. Judgment-only; no detector type.
+- **`load-bearing` as metaphor** (Tier 2 vocabulary). Flag "the load-bearing assumption," "a load-bearing connection" — replace with "central" / "essential" / "what the argument rests on," or name the specific dependency. Judgment-only; no detector type.
+
+### Changed
+
+- Reworded the Paragraph-reshuffle immunity test to drop its own use of "load-bearing."
+
 ## [3.11.0] — 2026-07-04
 
 First release of `davenicoll/better-ai-writing-skills`. Extends upstream v3.10 with six research-grounded categories from a July 2026 pass over the Guardian long-read "How AI is changing language" (Shariatmadari) and the primary papers it cites. All v3.10 content preserved verbatim.

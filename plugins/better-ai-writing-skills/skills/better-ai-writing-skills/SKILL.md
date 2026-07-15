@@ -1,7 +1,7 @@
 ---
 name: better-ai-writing-skills
 description: Audit and rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, and a research-grounded pattern list based on 2024-2026 stylometry literature. Fork of avoid-ai-writing v3.10 (Conor Bronsdon, MIT) extended with the Guardian 2026-07-04 long-read pass.
-version: 3.11.0
+version: 3.11.1
 license: MIT
 compatibility: Any AI coding assistant that supports agentskills.io SKILL.md format (Claude Code, Cursor, VS Code Copilot, Hermes Agent, OpenHands, etc.) or OpenClaw. No external tools or APIs required.
 metadata:
@@ -184,6 +184,8 @@ These words are legitimate on their own. When two or more show up together, the 
 | reimagine | rethink, redesign, rebuild |
 | galvanize | motivate, rally, push |
 | augment | add to, expand, supplement |
+| honest / honestly (as framing: "the honest answer," "an honest take," "to be honest") | (cut — state the claim directly; if naming a contrast, name it) |
+| load-bearing (metaphor: "the load-bearing assumption," "a load-bearing connection") | central, essential, what the argument rests on (or name the specific dependency) |
 | cultivate | build, develop, grow |
 | illuminate | clarify, explain, show |
 | elucidate | explain, clarify, spell out |
@@ -543,7 +545,7 @@ A very low TTR is not by itself proof of AI authorship — narrow topics, techni
 This is the first of four stylometric signals on the roadmap. The others (sentence-length burstiness as a continuous measure, function-word z-scores against a human-prose reference, POS-bigram log-odds) require either a POS tagger or a reference distribution and aren't implemented as detector categories yet.
 
 ### Paragraph-reshuffle immunity (structure test)
-- A writer-side diagnostic, not a regex: can you swap two body paragraphs without breaking the piece? If the order doesn't matter, you've written a list of points, not an argument that builds. AI prose often fails this — each paragraph is a self-contained module with no load-bearing connection to its neighbors.
+- A writer-side diagnostic, not a regex: can you swap two body paragraphs without breaking the piece? If the order doesn't matter, you've written a list of points, not an argument that builds. AI prose often fails this — each paragraph is a self-contained module with no connection that its neighbors depend on.
 - The fix is structural, not lexical: establish a through-line where each paragraph depends on the one before it. If the paragraphs are genuinely independent, decide whether the piece should be an explicit list, or whether it's missing a thesis. Adapted from `Aboudjem/humanizer-skill` P38.
 
 ### Treadmill effect / low information density (content test)
