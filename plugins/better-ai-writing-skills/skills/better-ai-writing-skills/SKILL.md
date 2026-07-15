@@ -1,7 +1,7 @@
 ---
 name: better-ai-writing-skills
 description: Audit and rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, and a research-grounded pattern list based on 2024-2026 stylometry literature. Fork of avoid-ai-writing v3.10 (Conor Bronsdon, MIT) extended with the Guardian 2026-07-04 long-read pass.
-version: 3.11.1
+version: 3.11.2
 license: MIT
 compatibility: Any AI coding assistant that supports agentskills.io SKILL.md format (Claude Code, Cursor, VS Code Copilot, Hermes Agent, OpenHands, etc.) or OpenClaw. No external tools or APIs required.
 metadata:
@@ -78,6 +78,7 @@ In **edit** mode, your job is to:
 ### Sentence structure
 - **"It's not X — it's Y" / "This isn't about X, it's about Y"**: Rewrite as a direct positive statement. Max one per piece, and only if it serves the argument.
 - **Hollow intensifiers**: Cut `genuine`, `real` (as in "a real improvement"), `truly`, `quite frankly`, `to be honest`, `let's be clear`, `it's worth noting that`. Just state the fact.
+- **Candor-announcers**: Cut framings that announce plainness or honesty instead of just being plain: `to put it plainly`, `put plainly`, `plainly put`, `stated plainly`, `worth stating plainly`, `to be blunt`, `in all honesty`, `if I'm honest`, `let's be honest`, `the plain truth is`. Real candor doesn't need a label — delete the framing and state the thing. Also applies to headings ("The caveats worth stating plainly" → "Caveats"): don't embellish a heading that works as a plain noun.
 - **Vague endorsement ("worth [verb]ing")**: Cut or replace `worth reading`, `worth paying attention to`, `worth a look`, `worth exploring`, `worth checking out`, `worth your time`. These substitute a generic thumbs-up for a specific reason. Say *why* something matters instead.
 - **Hedging**: Cut `perhaps`, `could potentially`, `it's important to note that`, `to be clear`. Make the point directly.
 - **Missing bridge sentences**: Each paragraph should connect to the last. If paragraphs could be rearranged without the reader noticing, add connective tissue.

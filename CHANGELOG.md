@@ -6,6 +6,12 @@ All notable changes to this project are documented here.
 
 ---
 
+## [3.11.2] — 2026-07-15
+
+### Added
+
+- **Candor-announcers** (Sentence structure). New bullet flagging framings that announce plainness or honesty instead of just being plain: `to put it plainly`, `put plainly`, `plainly put`, `stated plainly`, `worth stating plainly`, `to be blunt`, `in all honesty`, `if I'm honest`, `let's be honest`, `the plain truth is`. Extends the existing hollow-intensifier family (`quite frankly`, `to be honest`, `let's be clear`). Also calls out embellished headings ("The caveats worth stating plainly" → "Caveats"). Judgment-only; no detector type.
+
 ## [3.11.1] — 2026-07-15
 
 ### Added
