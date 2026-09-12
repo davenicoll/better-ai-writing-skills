@@ -6,7 +6,7 @@
 
 Detect / edit-in-place / iterate modes. Voice profiles. Research-grounded pattern list based on 2024–2026 stylometry literature.
 
-Fork of [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) v3.10 by Conor Bronsdon (MIT), extended with the Guardian 2026-07-04 long-read pass — see [notes/2026-07-04-guardian-research-pass.md](notes/2026-07-04-guardian-research-pass.md) for the research the extensions are grounded in.
+Fork of [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) by Conor Bronsdon (MIT), synced with upstream v3.34.0 and extended with the Guardian 2026-07-04 long-read pass — see [notes/2026-07-04-guardian-research-pass.md](notes/2026-07-04-guardian-research-pass.md) for the research the extensions are grounded in.
 
 </div>
 
@@ -23,7 +23,11 @@ Three modes:
 
 Optional voice profile (`casual` / `professional` / `technical` / `warm` / `blunt`) and context profile (`linkedin` / `blog` / `technical-blog` / `investor-email` / `external-email` / `docs` / `casual`). Iterate-to-convergence up to 2 passes.
 
-## What this fork adds vs upstream v3.10
+## Upstream sync
+
+The skill text tracks upstream. As of v3.12.0 (2026-09-12) it carries every SKILL.md rule change from upstream v3.11.0 through v3.34.0: the Tier 1A/1B split, 25 new pattern categories, the never-inject rewrite guardrails, and the voice-profile guardrail fixes. Upstream sections that depend on tooling this repo does not ship (quote normalizer, house-style config checker, preservation validator) were reduced to their tooling-free guidance. The deterministic detector under `detector/` and the Cursor rule are still at the v3.11 catalog and have not been synced.
+
+## What this fork adds vs upstream
 
 Six research-grounded categories from a July 2026 pass over the Guardian long-read "How AI is changing language" (Shariatmadari) and the primary papers it cites:
 
@@ -96,10 +100,11 @@ Power-user options (rarely needed — natural language usually works):
 - `--context linkedin|blog|technical-blog|investor-email|external-email|docs|casual`
 - `--file PATH` (edit mode)
 - `--iterate N` (max 2)
+- `--style GUIDE` (best-effort named house style, no compliance claim)
 
 ## What's in the pattern list
 
-The skill defines **55 pattern categories**. Tier 1 (always flag) and Tier 2 (flag in clusters) cover ~120 vocabulary entries. Tier 3 flags common words at density. Tier 4 (v3.11) adds the Kobak second-wave markers. Beyond vocabulary, the skill covers:
+The skill defines **80 pattern categories**. Tier 1 (always flag) and Tier 2 (flag in clusters) cover ~120 vocabulary entries. Tier 3 flags common words at density. Tier 4 (v3.11) adds the Kobak second-wave markers. Beyond vocabulary, the skill covers:
 
 - Formatting (em dashes, bold, emoji, bullets, quotes)
 - Sentence structure ("It's not X — it's Y", hollow intensifiers, hedging)
@@ -108,6 +113,10 @@ The skill defines **55 pattern categories**. Tier 1 (always flag) and Tier 2 (fl
 - Rhetorical patterns (rule-of-three, generic conclusions, terminal-insight move, signpost-then-content)
 - Register (sycophancy posture, register variation, attributive-adjective stacking)
 - Chatbot artifacts (openers, tool markup leaks, acknowledgment loops)
+- Conversational-register tells (wall-of-text replies, recap-flattery openers, narrated candor, lingering-attention claims)
+- Rhetorical tics (performed-insight phrases, negation chains, same-opener runs, stranded auxiliary contrast, manufactured punchlines)
+- Launch and social copy (dramatic introductions, fake-casual register, dramatized contrast against the crowd)
+- Rewrite guardrails (the never-inject list: no fake first person, manufactured stakes, or invented specifics)
 - Detection-tool caveats (what this skill isn't)
 
 See [SKILL.md](SKILL.md) for the full list.
@@ -120,10 +129,10 @@ Use the skill as a writing-quality tool, not as a verdict machine. Pair the sign
 
 ## Attribution
 
-- **Original author:** [Conor Bronsdon](https://github.com/conorbronsdon) — [avoid-ai-writing v3.10](https://github.com/conorbronsdon/avoid-ai-writing), MIT licensed.
+- **Original author:** [Conor Bronsdon](https://github.com/conorbronsdon) — [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing), MIT licensed. Skill text synced through upstream v3.34.0.
 - **Fork maintainer:** [Dave Nicoll](https://github.com/davenicoll) — v3.11 research-grounded extensions.
 
-The full v3.10 skill body is preserved verbatim. All extensions are marked `(v3.11 addition)` inline and grounded in cited primary sources. See [SKILL.md](SKILL.md) § "Research basis" for the bibliography.
+The upstream skill body is preserved, with the fork's extensions marked `(v3.11 addition)` inline and grounded in cited primary sources. See [SKILL.md](SKILL.md) § "Research basis" for the bibliography.
 
 ## Licence
 
