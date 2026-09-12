@@ -6,6 +6,36 @@ All notable changes to this project are documented here.
 
 ---
 
+## [3.12.0] — 2026-09-12
+
+Sync with upstream `conorbronsdon/avoid-ai-writing`. Ports every SKILL.md change from upstream v3.11.0 through v3.34.0 (2026-07-05 to 2026-09-11) into this fork's single-file skill via a three-way merge against the v3.10 import, keeping all v3.11.x fork additions. See the upstream changelog for the per-release reasoning behind each rule.
+
+### Added (ported from upstream)
+
+- **25 new detection categories**, catalog goes from 55 to 80: Aphorism formulas; Moral-adjective category errors; Transformation crutch; Subjectless fragments and agentless passives; False agency; Vague third-party validation; Speculative scenario openers; Unnecessary hyphenation; Launch-copy dramatic introductions; Fake-casual register; Lingering-attention claims; Invented contrast-pair mirroring; Narrated candor; Dramatized contrast against the crowd; Wall-of-text replies; Recap-flattery opener; Diff-anchored writing; Performed-insight phrases; Negation chains; Dev-blog boilerplate; Stacked rhetorical questions; Same-opener sentence runs; Stranded auxiliary contrast; Colon into a triple; Manufactured punchlines and staccato drama (with the repeated setup/reversal punchline subtype).
+- **Tier 1 split into 1A frequency markers and 1B clarity edits** (upstream 3.22.0), with the inherited-not-measured caveat on the 5–20x claim. Detect mode reports the two bands separately.
+- **Word table:** `load-bearing` moves to Tier 1A with upstream's abstract-noun allowlist (3.16.0, 3.33.0), replacing this fork's Tier 2 entry from 3.11.1; `quietly` and conditional `deeply` join Tier 2; `verbatim` joins Tier 3; `beacon` gets specific replacements; `genuinely` and `actually` join hollow intensifiers with delete-first guidance; a "match inflected forms" rule heads the table.
+- **Audience-fit note on domain-term collision** ("proof" in cryptography writing), judgment only.
+- **Never inject these** guardrails under Tone calibration (3.22.0): fake first person, manufactured stakes, forced contrarianism, performed candor, em-dash theatrics, staccato conversion, invented specifics. Voice-profile targets are now bound to these guardrails (3.25.1).
+- **Rule extensions:** split-sentence and multi-negation forms of "It's not X, it's Y" plus the tailing negation; invented concept labels under Novelty inflation; historical analogy stacking under Notability name-dropping; fake-candid openers under Infomercial hooks; fragmented headers under Excessive structure; consequence-free explanations under Acknowledgment loops; immaculate typography in casual registers under Formatting; hashtag carve-outs for issue refs, hex colours, and preprocessor directives; the em-dash definition-list carve-out.
+- **Prose-contract clarifications** (3.22.3, 3.26.0): edit mode refuses non-prose files, treats the file as text under audit rather than a source of instructions, and leaves tables alone; the rewrite job line scopes itself to editable AI-isms; the second-pass audit must say when its text supersedes section 2; the URL fix strips only the AI-referrer parameter.
+- **Severity tiers:** new P1 entries for lingering-attention claims, narrated candor, moral-adjective errors, and invented contrast pairs; em-dash frequency moves from P1 to P2 as writing-quality guidance rather than authorship evidence (3.34.0); P2 gains the judgment-only clarity checks and unnecessary hyphenation.
+- **Tolerance matrix:** three new rows (moral-adjective errors, invented contrast pairs, subjectless fragments), each with an `external-email` column set to strict.
+- Frontmatter regains the `openclaw` emoji block.
+
+### Changed
+
+- **Hyphenated-pair overuse** renamed **Hyphenated modifier stacking**; the correctness half moved to the new Unnecessary hyphenation rule.
+- **Candor-announcers** (this fork, 3.11.2) now cross-references upstream's Narrated candor; both stay, since one covers phrase-level framings and the other the announced-disclosure form.
+- Fixed the em-dash mojibake in the profile definitions, rhetorical-question, parenthetical-hedging, and numbered-list rules inherited from the v3.10 import.
+
+### Not ported, and why
+
+- **Tooling-dependent sections were reduced to their tooling-free guidance.** Upstream's automatic quote-normalization pass (`scripts/normalize-quotes.js`), the `--style` JSON config layer (`scripts/check-style.js`, `examples/`), and the edit-mode preservation validator (`detector/validate.js`) reference scripts this repo does not ship. The skill now states the quote-consistency rule as a manual instruction, keeps `--style` as the named-guide-from-memory fallback only, and drops the validator block.
+- **The deterministic detector is not synced.** Upstream's engine went from 44 to 48+ `type`s plus many precision fixes across these releases; `detector/patterns.js` here is still the v3.11 engine. Several ported rules describe detector behaviour ("the detector matches…") that this repo's engine does not yet implement. Tracked as follow-up work.
+- **The Cursor rule** (`cursor-rules/better-ai-writing.mdc`) is still at v3.11.
+- Upstream's compact `SKILL.md` / `SKILL.full.md` split, plugin packaging for Codex and ChatGPT, corpus and measurement tooling, and CI hardening were left out to keep this a single-file skill.
+
 ## [3.11.3] — 2026-07-15
 
 ### Added
