@@ -21,7 +21,7 @@ Three modes:
 - **`detect`** — flag only. No rewriting. Useful for audits, published content, someone else's writing.
 - **`edit`** — apply minimal, targeted edits to a file in place.
 
-Optional voice profile (`casual` / `professional` / `technical` / `warm` / `blunt`) and context profile (`linkedin` / `blog` / `technical-blog` / `investor-email` / `external-email` / `docs` / `casual`). Iterate-to-convergence up to 2 passes.
+Optional voice profile (`casual` / `professional` / `technical` / `warm` / `blunt` / `executive`) and context profile (`linkedin` / `blog` / `technical-blog` / `investor-email` / `external-email` / `executive-deck` / `docs` / `casual`). Iterate-to-convergence up to 2 passes.
 
 ## Upstream sync
 
@@ -96,8 +96,8 @@ Natural language triggers the skill. Some phrasings the skill recognises:
 
 Power-user options (rarely needed — natural language usually works):
 - `--mode rewrite|detect|edit`
-- `--voice casual|professional|technical|warm|blunt`
-- `--context linkedin|blog|technical-blog|investor-email|external-email|docs|casual`
+- `--voice casual|professional|technical|warm|blunt|executive`
+- `--context linkedin|blog|technical-blog|investor-email|external-email|executive-deck|docs|casual`
 - `--file PATH` (edit mode)
 - `--iterate N` (max 2)
 - `--style GUIDE` (best-effort named house style, no compliance claim)
@@ -117,6 +117,7 @@ The skill defines **80 pattern categories**. Tier 1 (always flag) and Tier 2 (fl
 - Rhetorical tics (performed-insight phrases, negation chains, same-opener runs, stranded auxiliary contrast, manufactured punchlines)
 - Launch and social copy (dramatic introductions, fake-casual register, dramatized contrast against the crowd)
 - Rewrite guardrails (the never-inject list: no fake first person, manufactured stakes, or invented specifics)
+- Executive writing (v3.13): an `executive` voice and `executive-deck` context judged on two tests, so-what answered and every word belongs, plus answer-first structure, quantified asks, real options, owned risks, action titles, and one message per slide. Research in [notes/2026-09-12-executive-writing-research.md](notes/2026-09-12-executive-writing-research.md).
 - Detection-tool caveats (what this skill isn't)
 
 See [SKILL.md](SKILL.md) for the full list.
