@@ -1,7 +1,7 @@
 ---
 name: better-ai-writing-skills
 description: Audit and rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, and a research-grounded pattern list based on 2024-2026 stylometry literature. Fork of avoid-ai-writing (Conor Bronsdon, MIT), synced with upstream v3.34.0 and extended with the Guardian 2026-07-04 long-read pass.
-version: 3.12.0
+version: 3.13.0
 license: MIT
 compatibility: Any AI coding assistant that supports agentskills.io SKILL.md format (Claude Code, Cursor, VS Code Copilot, Hermes Agent, OpenHands, etc.) or OpenClaw. No external tools or APIs required.
 metadata:
@@ -43,7 +43,7 @@ This skill operates in one of three modes:
 
 Trigger detect mode when the user says "detect," "flag only," "audit only," "just flag," "scan," "what AI patterns are in this," or similar. Trigger edit mode when the user names a file and asks you to fix or clean it in place. Default to rewrite mode if not specified.
 
-**Invocation.** Natural language is enough ("rewrite this in a blunt voice for LinkedIn," "edit `post.md` in place," "scan this, don't rewrite"). Power users can also pass explicit options, which map to the sections below: `[--mode rewrite|detect|edit]`, `[--voice casual|professional|technical|warm|blunt]`, `[--context linkedin|blog|technical-blog|investor-email|docs|casual]`, `[--file PATH]`, `[--iterate N]` (max 2), `[--style GUIDE]`.
+**Invocation.** Natural language is enough ("rewrite this in a blunt voice for LinkedIn," "edit `post.md` in place," "scan this, don't rewrite"). Power users can also pass explicit options, which map to the sections below: `[--mode rewrite|detect|edit]`, `[--voice casual|professional|technical|warm|blunt|executive]`, `[--context linkedin|blog|technical-blog|investor-email|external-email|executive-deck|docs|casual]`, `[--file PATH]`, `[--iterate N]` (max 2), `[--style GUIDE]`.
 
 **Iterate to convergence (optional).** Rewrite mode already runs one corrective second pass (see Output format) — that built-in pass *is* pass 2, so `--iterate` does not stack on top of it. When the writer asks to "iterate," "keep going until it's clean," or passes `--iterate N`, repeat the audit→rewrite cycle until no patterns remain or **N passes** are reached. Cap **N at 2**: a rewrite plus one corrective pass clears the flagged patterns, and a third pass costs a full regeneration while rarely finding more. Report how many passes it took ("converged in 2 passes").
 
@@ -848,37 +848,41 @@ Flag on sight:
 
 **Tolerance:** low. Even one instance in a 200-word email warrants a rewrite. Two means the whole draft needs redoing.
 
+**`executive-deck`** (v3.13 addition) — Slide outlines for a decision-making audience. Structure is judged, not just tone: action titles, one message per slide, summary before appendix, decision slide last, and a so-what answered in every title. See Executive writing. Pairs with the `executive` voice by default.
+
 ### Tolerance matrix
 
 Rules not listed in the table apply at full strength across all profiles.
 
-| Rule | linkedin | blog | technical-blog | investor-email | external-email | docs | casual |
-|------|----------|------|----------------|----------------|----------------|------|--------|
-| Em dashes | relaxed (2/post OK) | strict | strict | strict | strict | relaxed | skip |
-| Bold overuse | relaxed (bold hooks OK) | strict | strict | strict | strict | relaxed | skip |
-| Emoji in headers | relaxed (1-2 end-of-line OK) | strict | strict | strict | strict | skip | skip |
-| Excessive bullets | skip (lists work on LinkedIn) | strict | relaxed (technical lists OK) | strict | strict | skip (lists are docs) | skip |
-| Hedging | strict | strict | relaxed ("may" is accurate in technical) | strict | **extra strict** | relaxed | skip |
-| Word table (full list) | strict | strict | **partial** (see below) | strict | strict | relaxed | P0 only |
-| Promotional language | relaxed (some sell is expected) | strict | strict | **extra strict** | **extra strict** | strict | skip |
-| Significance inflation | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip |
-| Copula avoidance | skip | strict | relaxed | strict | strict | skip | skip |
-| Uniform paragraph length | skip (short-form) | strict | strict | strict | strict | relaxed | skip |
-| Numbered list inflation | relaxed | strict | relaxed | strict | strict | skip | skip |
-| Rhetorical questions | relaxed (1 as hook OK) | strict | strict | strict | strict | strict | skip |
-| Transition phrases | skip (short-form) | strict | strict | strict | strict | relaxed | skip |
-| Generic conclusions | skip | strict | strict | **extra strict** | **extra strict** | skip | skip |
-| Hashtag stuffing | strict | strict | strict | **extra strict** | skip (no hashtags in professional emails) | skip (no hashtags in docs) | skip |
-| Bullet-NP lists | strict | strict | relaxed (technical option lists OK) | strict | strict | relaxed (parameter lists OK) | skip |
-| Tier 3 phrase clustering | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip |
-| Future-narrative closers | strict | strict | strict | **extra strict** | **extra strict** | skip | skip |
-| Social endorsement closers | strict (the LinkedIn share-post tell) | strict | strict | strict | strict | skip | relaxed (1 OK in a DM) |
-| Hedge-stacked predictions | strict | strict | relaxed ("could" is hedged accuracy) | **extra strict** | **extra strict** | relaxed | skip |
-| Real/actual inflation | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip |
-| Face-saving pragmatic hedges (external-email profile primary tell) | relaxed | relaxed | relaxed | strict | **extra strict** | relaxed | skip |
-| Moral-adjective category errors | strict | strict | relaxed | strict | strict | relaxed | skip |
-| Invented contrast-pair mirroring | strict | strict | relaxed | strict | strict | relaxed | skip |
-| Subjectless fragments and agentless passives | relaxed (short-form fragments are the register) | strict | relaxed | strict | strict | skip (fragment lists are docs) | skip |
+| Rule | linkedin | blog | technical-blog | investor-email | external-email | docs | casual | executive-deck |
+|------|----------|------|----------------|----------------|----------------|------|--------|----------------|
+| Em dashes | relaxed (2/post OK) | strict | strict | strict | strict | relaxed | skip | strict |
+| Bold overuse | relaxed (bold hooks OK) | strict | strict | strict | strict | relaxed | skip | relaxed (one bold figure per slide OK) |
+| Emoji in headers | relaxed (1-2 end-of-line OK) | strict | strict | strict | strict | skip | skip | strict |
+| Excessive bullets | skip (lists work on LinkedIn) | strict | relaxed (technical lists OK) | strict | strict | skip (lists are docs) | skip | relaxed (bullets are the medium; 3–5 per slide) |
+| Hedging | strict | strict | relaxed ("may" is accurate in technical) | strict | **extra strict** | relaxed | skip | **extra strict** |
+| Word table (full list) | strict | strict | **partial** (see below) | strict | strict | relaxed | P0 only | strict |
+| Promotional language | relaxed (some sell is expected) | strict | strict | **extra strict** | **extra strict** | strict | skip | **extra strict** |
+| Significance inflation | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip | **extra strict** |
+| Copula avoidance | skip | strict | relaxed | strict | strict | skip | skip | strict |
+| Uniform paragraph length | skip (short-form) | strict | strict | strict | strict | relaxed | skip | skip (slides are not paragraphs) |
+| Numbered list inflation | relaxed | strict | relaxed | strict | strict | skip | skip | strict |
+| Rhetorical questions | relaxed (1 as hook OK) | strict | strict | strict | strict | strict | skip | strict |
+| Transition phrases | skip (short-form) | strict | strict | strict | strict | relaxed | skip | skip (no flowing prose) |
+| Generic conclusions | skip | strict | strict | **extra strict** | **extra strict** | skip | skip | **extra strict** |
+| Hashtag stuffing | strict | strict | strict | **extra strict** | skip (no hashtags in professional emails) | skip (no hashtags in docs) | skip | skip |
+| Bullet-NP lists | strict | strict | relaxed (technical option lists OK) | strict | strict | relaxed (parameter lists OK) | skip | strict |
+| Tier 3 phrase clustering | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip | strict |
+| Future-narrative closers | strict | strict | strict | **extra strict** | **extra strict** | skip | skip | **extra strict** |
+| Social endorsement closers | strict (the LinkedIn share-post tell) | strict | strict | strict | strict | skip | relaxed (1 OK in a DM) | skip |
+| Hedge-stacked predictions | strict | strict | relaxed ("could" is hedged accuracy) | **extra strict** | **extra strict** | relaxed | skip | **extra strict** |
+| Real/actual inflation | strict | strict | strict | **extra strict** | **extra strict** | relaxed | skip | strict |
+| Face-saving pragmatic hedges (external-email profile primary tell) | relaxed | relaxed | relaxed | strict | **extra strict** | relaxed | skip | strict |
+| Moral-adjective category errors | strict | strict | relaxed | strict | strict | relaxed | skip | strict |
+| Invented contrast-pair mirroring | strict | strict | relaxed | strict | strict | relaxed | skip | strict |
+| Subjectless fragments and agentless passives | relaxed (short-form fragments are the register) | strict | relaxed | strict | strict | skip (fragment lists are docs) | skip | relaxed (fragments in bullets are the register; flag agentless passives in titles) |
+| Title case headings | strict | strict | strict | strict | strict | strict | skip | skip (deck convention; sentence-case action titles still preferred) |
+| Colon into a triple | strict | strict | relaxed (technical lists are often three) | strict | strict | relaxed | skip | strict |
 
 **Technical-blog word table exceptions:** These terms have legitimate technical meaning and should not be flagged in technical context: `robust`, `comprehensive`, `seamless`, `ecosystem`, `leverage` (when discussing actual platform leverage/APIs), `facilitate`, `underpin`, `streamline`. Still flag: `delve`, `tapestry`, `beacon`, `embark`, `testament to`, `game-changer`, `harness`.
 
@@ -896,6 +900,8 @@ When no context is specified, infer from these signals:
 | Code blocks, API references, or technical architecture | `technical-blog` |
 | Salutation ("Hi [name]", "Dear") + investor/fundraising language | `investor-email` |
 | Step-by-step instructions, parameter docs, README structure | `docs` |
+| Headings such as "Recommendation," "Decision required," "Ask," "Options considered," "Risks," "Timing," "Resources"; "for decision" or "for noting"; addressed to a board, minister, or named executive | `executive` voice (context from the medium: email, `docs`, or `executive-deck`) |
+| Slide-shaped blocks: "Slide N" or numbered titled blocks with 3–5 bullets, "Appendix," "Source:" lines, "Speaker notes:" | `executive-deck` |
 | No strong signals | `blog` (safest default — all rules apply) |
 
 If auto-detection feels wrong, say which profile you're using and why. The user can override.
@@ -921,9 +927,122 @@ Each profile is a set of concrete targets, not a vibe:
 
 **`blunt`** — Lead with the claim; cut "It's important to note that" windups. Em-dashes are rare here; use periods for emphasis. No padding to hit a rule of three. Near-zero hedging; flag "may / could / potentially" stacks. Short declaratives, with the occasional long sentence for contrast. *Decision memos, thought leadership, hard feedback.*
 
+**`executive`** — For readers who decide: C-suite, SVPs, boards, investors, and the directors one level up. The reader will act on paragraph one and may not reach paragraph two, so every target below serves that first paragraph. Answer first: the recommendation, decision, or finding opens the piece, never the topic or the background. Every passage asks and answers "so what" for this reader: what they should decide, do, or believe differently because of it. A fact with no consequence attached is a flag. Every word belongs: if a word or phrase can go without the reader losing anything they need, it goes. Name the type of ask (for decision / for discussion / for information) and quantify it: money, people, time, and the date a decision is needed. One recommendation phrased so the reader can say yes or no; never "recommend further discussion." Alternatives considered are listed, including doing nothing, and no option is padded in to make three. Every risk names its impact, mitigation, and owner; "this is risky" on its own is a flag. Background comes after the answer and is short, since the reader is an intelligent non-expert who already knows the story. Sentences average 15–20 words with one idea each; paragraphs run four sentences or fewer. Active voice with an owned verb: "we recommend," "I will," "Finance approved," never "it is recommended" or "it was decided." One hedge per claim at most, first-person and conditioned ("I expect X; it depends on Y"); impersonal or stacked hedges are cut. Numbers replace adjectives: "significant," "substantial," and "material" become the figure, rounded to what the decision needs. Follow the source document's spelling. Full rules, phrase tables, and audience tightening in **Executive writing** below. *Decision memos, board papers, briefing notes, exec emails, investor updates.*
+
 **Calibrate to a sample (optional).** If the writer gives you a sample of their own writing ("match my voice — here's a post"), analyze its sentence-length pattern, contraction rate, paragraph openings, and recurring word choices, then match those instead of a named profile. Don't "upgrade" their vocabulary: if they write "stuff" and "things," keep that register.
 
 **How voice composes with context.** Voice sets the target; context sets how hard to enforce it. A voice *target* always applies, even where a context profile would skip that category — `technical` voice still prefers plain copulatives in a `casual` context that otherwise ignores copula avoidance. Where both axes govern the same rule and agree, they reinforce: `blunt` voice wants near-zero em-dashes and a `blog` context is already strict on them, so it stays a hard edit. Where they disagree, resolve toward the **stricter** of the two — a `warm` voice on `docs` still doesn't get decorative tables. Sensible default pairings: casual↔casual, professional↔linkedin/investor-email, technical↔docs/technical-blog.
+
+**Executive pairings.** `executive` voice + `executive-deck` context is the default deck pairing. `executive` voice also composes with `investor-email` and `external-email`; where both axes govern hedging, the stricter wins, which is extra strict in all three. `blunt` remains the voice for thought leadership and hard feedback. `executive` differs in that it is judged on structure (answer first, so-what answered, ask quantified, options real) and not only on tone.
+
+---
+
+## Executive writing (v3.13 addition)
+
+Rules for the `executive` voice and the `executive-deck` context. Both are bounded by the Never-inject guardrails: when a rule asks for a figure, owner, date, option, or consequence the source does not contain, flag the gap and leave it. Never fill it. Research basis: [notes/2026-09-12-executive-writing-research.md](notes/2026-09-12-executive-writing-research.md).
+
+### Two governing tests
+
+Apply these before any other executive rule. They are what the reader will judge the piece on.
+
+**So what, asked and answered.** For every paragraph, section, and slide, ask: what should this reader decide, do, or believe differently because of it? The passage must answer that question itself, in words, not leave the reader to infer it. "Revenue fell 12% in Q3" is a fact. "Revenue fell 12% in Q3, so the Q4 hiring plan needs a $2M cut" is a fact with its so-what. Flag any paragraph, section, or slide whose consequence for the reader is missing or implied. Flag the hollow form too: "this matters because it is important" restates significance without naming the consequence. If the source states no consequence and none can be read from it, flag "so-what missing" in section 1 rather than inventing one.
+
+**Every word belongs.** Delete the word or phrase and reread. If the reader has lost nothing they need to decide, it goes. This test runs on every sentence, not only the flagged ones. What usually fails it: intensifiers ("very," "truly," "highly"); doubled words ("plan ahead," "future plans," "final outcome," "end result"); throat-clearing ("it is worth noting," "as you know," "in this regard"); courtesy padding ("I hope this helps," "thank you for your time"); a sentence that restates its heading; a summary that restates the paragraph above it; any adjective a number could replace. Measure: after the pass, roughly four words in five carry information the reader needs. Below that, cut again.
+
+### Audience tightening
+
+The default target is a C-suite or SVP reader at a mid-size company. Two adjustments:
+
+- **Board or investor reader.** Tighten. Open with the ask type and the resolution sought. Every figure carries its source and period. Risks are a required section, not an aside. Length cap is four pages of argument plus a one-page summary; anything else is an appendix. Promotional language and significance inflation are P0.
+- **Director or VP reader.** Relax one notch. Options with a stated lean are acceptable where the source presents them that way. Background may run to a paragraph. Technical terms the reader shares with the writer stay.
+
+### Structure checks (prose)
+
+Apply to memos, briefs, board papers, and emails over roughly 120 words. Flag each miss by name.
+
+1. **Answer first.** The first sentence or two states the recommendation, decision, or key finding. Test: could the reader stop after paragraph one and act? "This memo addresses the Q3 budget revision" is a topic sentence, not an answer. "I recommend we cut Q3 marketing by $200k to cover the facilities overrun" is the answer.
+2. **Ask type named.** For decision, for discussion, or for information, stated in the opening block or the subject line. Subject lines carry a keyword and the ask: "DECISION: approve the vendor contract by Friday."
+3. **Ask quantified.** Money, headcount, time, and the decision deadline appear in the opening block. If the source omits one, flag "ask not quantified: no deadline" rather than inventing it.
+4. **One recommendation.** Phrased for yes or no. "Recommend a discussion with the team" is a flag. Where the source is a discussion paper with no recommendation, say so in section 1 and do not manufacture one.
+5. **Real options.** Alternatives considered, including doing nothing, each with one line on why it lost. Flag the padded third option that nobody could choose. If there are no options, the piece should say so.
+6. **Risks owned.** Each risk names impact, mitigation, and owner. Flag "risky," "some risk," and any risk left with no next step.
+7. **Background after the answer.** Flag background that precedes the recommendation, restates what the reader commissioned, or runs past a short paragraph.
+8. **Length by genre.** Exec email: one screen. Brief or submission: two to three pages. Board decision paper: four pages plus a one-page summary. Strategy narrative: six pages, readable in twenty minutes. Detail beyond the cap belongs in an annex. Flag the overrun and name what to move.
+9. **Pyramid body.** Two to four supporting arguments of the same kind, each under a full-sentence heading, evidence beneath. Flag a body that is one long list with no headings, or headings that are labels ("Context," "Analysis") rather than claims.
+10. **So-what per section.** Each section ends on its consequence for the decision, not on its last fact. See the governing test above.
+
+### Sentence and word checks (prose)
+
+- **Length.** Average 15–20 words per sentence, one idea each. Flag paragraphs over four sentences or any paragraph that fills most of a page.
+- **Voice.** Active, with the actor named. Flag "it is recommended," "it was decided," "mistakes were made," "consideration should be given."
+- **Hedges.** One per claim, first-person, with its condition: "I expect the migration to finish in Q2; the dependency is the vendor's API date." Cut impersonal and low-likelihood forms: "could potentially," "it may be the case that," "there is a possibility," "arguably," "somewhat," "hopefully." Cut "I'll try."
+- **Numbers over adjectives.** "Significant," "substantial," "material," "considerable," "meaningful" become the figure. Round to decision precision: $5.2M, not $5,243,118; 15%, not 14.62%. One unit scale per document.
+- **Technical terms.** Replace rather than define; a defined term still slows the reader. Keep only terms the reader uses themselves.
+- **Topic-sentence openers.** Cut "This memo addresses," "The purpose of this document is," "This paper sets out," "I am writing to."
+- **Discursive asides and grandiosity.** Cut "It is interesting to note," "in this regard," and links from a routine issue to the company's mission or the national agenda.
+
+### Phrase tables (executive profiles only)
+
+These fire in the `executive` voice and the `executive-deck` context. They do not join the global catalog; in other registers the general rules apply.
+
+**Deference and padding — cut:**
+
+| Cut | Replace with |
+|---|---|
+| I wanted to reach out / I'm reaching out because | (state the ask) |
+| I hope this finds you well / I hope this email finds you well | (cut) |
+| Just checking in / just following up / just a quick note | (the question, or the deadline) |
+| Sorry to bother you / apologies for the interruption | (cut) |
+| Please find attached / please see attached | Attached: [name] |
+| As per / as per my last email / as I mentioned before | (repeat the fact, or cut) |
+| Please do not hesitate to contact me | (cut, or name who to call) |
+| For your perusal / for your consideration / for your review | (say what you need from them) |
+| To be honest with you / to be frank | (cut) |
+| It is important to bear in mind / consideration should be given to | (state the point) |
+| Going forward | from [date], or cut |
+| At the end of the day | (cut) |
+
+**Corporate jargon — replace:**
+
+| Replace | With |
+|---|---|
+| circle back | follow up on [date] |
+| synergy / synergies | the specific saving or gain |
+| leverage (verb) | use |
+| reach out / touch base | call, email, meet |
+| bandwidth | time, people |
+| low-hanging fruit | the specific easy item |
+| take this offline | discuss after the meeting |
+| deep dive | analysis, review |
+| align / alignment / get aligned | agree, agreement |
+| learnings | lessons |
+| move the needle | the metric and the change |
+| value-add / value-added | the specific benefit |
+| best-in-class / world-class | the benchmark or comparison |
+| north star | the goal, named |
+| double-click on | look at, examine |
+| boil the ocean | (cut, or name the scope) |
+| stakeholders (unnamed) | the named people or teams |
+| drive / enable / unlock / optimize (as the main verb) | the concrete action: cut, approve, hire, stop, ship |
+
+**LLM tells at extra strict in these profiles:** the Tier 1 word table; "it's important to note"; "It's not X, it's Y" in any form; rule-of-three padding; em-dash clusters; symmetric pros and cons that never conclude; an executive summary that summarises the document instead of the decision; round figures with no source; sycophantic openers and closers.
+
+### Deck checks (`executive-deck` context)
+
+Decks arrive as markdown or plain-text outlines: slide titles, bullets, optional speaker notes and source lines. Judge structure as well as tone. The two governing tests apply per slide: every slide answers its so-what in the title, and every word on it belongs.
+
+1. **Action titles.** Every slide title is a full sentence stating the slide's conclusion: "Revenue fell 12% on volume, not price," not "Revenue overview." Two lines and fifteen words maximum, active voice, quantified where the data allows. Flag label titles and titles that describe activity ("We interviewed 20 customers") rather than the finding.
+2. **Horizontal logic.** Read the titles alone, in order. They should carry the whole argument: situation, complication, recommendation. Flag a deck whose titles do not.
+3. **Vertical logic.** Everything on a slide proves its title. One message per slide; a slide making two points is two slides. Flag a second chart or a second claim.
+4. **Executive summary first.** The first content slide carries the governing recommendation as its title and three to five bullets, each a complete claim; the ask and the decision date appear here. A two-column situation and recommendation layout also passes.
+5. **Summary before appendix.** Roughly ten summary slides at most before the appendix; one summary slide per ten of backup. Everything not needed for the argument moves to a numbered, cross-referenced appendix used reactively in questions. Flag a body slide that answers a question nobody asked yet.
+6. **Bullets are claims.** Three to five per slide, each a full sentence with a verb. Flag bare noun-phrase bullets, walls of seven or more, and nested bullet trees.
+7. **Notes carry the narrative.** In a presented deck, on-slide text stays minimal and the speaker notes hold the detail; flag notes that repeat the slide text. In a pre-read deck, one message and about a hundred words per slide; past roughly 250 words the slide should be a memo.
+8. **Charts labelled.** Every chart has a message title, units, and a source line ("Source: company filings 2023–25; internal analysis"). Flag missing units or sources.
+9. **So-what test.** For each slide, what should the reader decide or believe differently? If the title does not say, rewrite it; if nothing would change, the slide moves to the appendix.
+10. **Close on the decision.** The last slide restates the ask, the options considered, the recommendation, resources, owners, and dates. Flag "Questions?" or "Thank you" as the closing slide, and "Key takeaways" slides that repeat earlier titles verbatim.
+
+Deck anti-patterns to name in section 1: label titles; an agenda longer than one slide; a slide with two charts; charts with no source; speaker notes pasted from the slide; a "balanced" options slide with no recommendation.
 
 ---
 

@@ -6,6 +6,18 @@ All notable changes to this project are documented here.
 
 ---
 
+## [3.13.0] — 2026-09-14
+
+### Added
+
+- **`executive` voice profile.** For readers who decide: C-suite, SVPs, boards, investors, directors one level up. Governed by two tests that run before every other rule: **so what, asked and answered** (every paragraph, section, and slide states what the reader should decide, do, or believe differently; a fact with no consequence is a flag) and **every word belongs** (delete the word and reread; if the reader lost nothing they need, it goes; roughly four words in five must carry information). Structure checks: answer first, ask type named, ask quantified (money, people, time, deadline), one yes/no recommendation, real options including doing nothing, risks with impact, mitigation, and owner, background after the answer, length caps by genre, pyramid body, so-what per section. Sentence checks: 15–20 words average, active owned verbs, one conditioned first-person hedge per claim, numbers over adjectives, replace rather than define jargon. Two phrase tables scoped to the executive profiles only (deference and padding to cut; corporate jargon to replace), so the global catalog and pattern count are unchanged. Audience tightening for board and investor readers and a one-notch relaxation for directors and VPs. Bounded by the Never-inject guardrails: a missing figure, owner, date, option, or consequence is flagged, never invented.
+- **`executive-deck` context profile.** Slide outlines in markdown or plain text, judged on structure as well as tone: action titles (full-sentence conclusion, two lines, fifteen words), horizontal and vertical logic, executive summary first, summary before appendix at roughly one to ten, bullets as claims (3–5, full sentences), speaker notes carrying the narrative, charts with message title, units, and source, a so-what test per slide, and a decision slide last. New tolerance-matrix column plus two rows (Title case headings, Colon into a triple), two auto-detection cues, and composition notes with `blunt`, `investor-email`, and `external-email`.
+- **Research note.** [`notes/2026-09-12-executive-writing-research.md`](notes/2026-09-12-executive-writing-research.md): 49 sources across Minto, MBB deck conventions, BLUF, Amazon narratives, Duarte, Bernoff, HBR, Stanford and Wharton, UK, Canadian, and Australian government briefing standards, board-paper guidance, and the empirical literature on hedging, jargon, and AI-assisted business writing. Unverified claims are marked.
+
+### Changed
+
+- Invocation options gain `executive` under `--voice` and `executive-deck` under `--context`.
+
 ## [3.12.0] — 2026-09-12
 
 Sync with upstream `conorbronsdon/avoid-ai-writing`. Ports every SKILL.md change from upstream v3.11.0 through v3.34.0 (2026-07-05 to 2026-09-11) into this fork's single-file skill via a three-way merge against the v3.10 import, keeping all v3.11.x fork additions. See the upstream changelog for the per-release reasoning behind each rule.

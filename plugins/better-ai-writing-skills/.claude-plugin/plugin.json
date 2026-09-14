@@ -1,7 +1,7 @@
 {
   "name": "better-ai-writing-skills",
   "description": "Audit & rewrite content to remove AI writing patterns. Detect / edit-in-place / iterate modes, voice profiles, research-grounded pattern list.",
-  "version": "3.12.0",
+  "version": "3.13.0",
   "author": {
     "name": "Dave Nicoll",
     "url": "https://github.com/davenicoll"
